@@ -1,0 +1,8 @@
+# Statements & reports
+*.csv
+*.xls*
+*.pdf
+*.json
+
+# IDE
+.idea
