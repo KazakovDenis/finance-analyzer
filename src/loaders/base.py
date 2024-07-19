@@ -1,7 +1,6 @@
-from src.domain import ReportData
+from models.domain import InputRow
 
 
 class AbstractLoader:
-
-    def load(self, *args, **kwargs) -> ReportData:
+    def load(self, filename: str) -> list[InputRow]:
         raise NotImplementedError

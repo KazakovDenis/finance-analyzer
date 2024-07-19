@@ -1,18 +1,27 @@
-from src.builder import Builder
+from models.domain import Verbosity
+from src.calculator import Calculator
+from src.classifier import ExpenseClassifier
 from src.converters.csv import CSVConverter
 from src.loaders.credo import CredoBankLoader
 
 
-def main():
-    loader = CredoBankLoader()
-    data = loader.load('report.csv')
-
-    builder = Builder()
-    report = builder.build(data)
-
-    converter = CSVConverter()
-    converter.convert(report)
+def run(
+    loader: CredoBankLoader,
+    calculator: Calculator,
+    converter: CSVConverter,
+    verbosity: Verbosity,
+):
+    input_data = loader.load('filename.csv')
+    output_data = calculator.calc(input_data, verbosity)
+    converter.convert(output_data)
 
 
 if __name__ == '__main__':
-    main()
+    run(
+        loader=CredoBankLoader(
+            classifier=ExpenseClassifier(),
+        ),
+        calculator=Calculator(),
+        converter=CSVConverter(),
+        verbosity=Verbosity.MONTH,
+    )

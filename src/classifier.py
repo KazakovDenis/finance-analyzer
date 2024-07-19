@@ -1,6 +1,15 @@
 from enum import Enum
 
-from src.domain import Category
+from models.domain import Category
+
+
+class ExpenseClassifier:
+    @staticmethod
+    def classify(entry: str) -> Category | str:
+        for name, category in Recipient:
+            if name.lower() in entry.lower():
+                return category
+        return entry
 
 
 class Recipient(tuple[str, Category], Enum):
@@ -8,12 +17,5 @@ class Recipient(tuple[str, Category], Enum):
     PHARMADEPOT = 'PHARMADEPOT', Category.HEALTH
     YANDEX_GO = 'Yandex Go', Category.TRANSPORT
 
-
-class ExpenseClassifier:
-
-    @staticmethod
-    def classify(entry: str) -> Recipient | str:
-        for name, category in Recipient:
-            if name.lower() in entry.lower():
-                return category
-        return entry
+    # Misc
+    EXCHANGE = 'Exchange', Category.EXCHANGE
