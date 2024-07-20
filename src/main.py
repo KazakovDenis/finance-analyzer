@@ -11,7 +11,7 @@ def run(
     converter: CSVConverter,
     verbosity: Verbosity,
 ):
-    input_data = loader.load('filename.csv')
+    input_data = loader.load('inputs/credo.csv')
     output_data = calculator.calc(input_data, verbosity)
     converter.convert(output_data)
 
