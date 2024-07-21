@@ -8,11 +8,19 @@ Entry: TypeAlias = tuple[datetime, Union['Category', str], 'Currency']
 
 
 class Category(str, Enum):
-    FOOD = 'Продукты'
-    HEALTH = 'Здоровье'
+    ANIMAL = 'Животные'
+    BEAUTY = 'Красота'
+    CHILD = 'Ребёнок'
+    COMMISSION = 'Комиссии'
     EXCHANGE = 'Обмен валют'
+    FOOD = 'Продукты'
+    GOODS = 'Покупки'
+    HEALTH = 'Здоровье'
     RECREATION = 'Отдых'
+    TRANSFER = 'Переводы'
     TRANSPORT = 'Транспорт'
+    UNKNOWN = 'Остальное'
+    UTILITY = 'Коммунальные услуги'
 
 
 class Currency(str, Enum):
@@ -23,9 +31,9 @@ class Currency(str, Enum):
 
 
 class TransferType(str, Enum):
+    INCOMING = 'INCOMING'
+    OUTGOING = 'OUTGOING'
     EXCHANGE = 'EXCHANGE'
-    PAYMENT = 'PAYMENT'
-    P2P = 'P2P'
 
 
 class Verbosity(str, Enum):

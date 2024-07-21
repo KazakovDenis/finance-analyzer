@@ -12,12 +12,17 @@ ExpensesToCategories: TypeAlias = dict[str, str]
 class ExpenseClassifier:
     _categories: ExpensesToCategories = {}
     _directory = Path('categories')
+    _extension = '.json'
 
-    def classify(self, entry: str) -> Category | str:
+    def classify(self, entry: str, use_unknown: bool = True) -> Category | str:
         temp = entry.lower()
+
         for name, category in self.categories.items():
             if name.lower() in temp:
                 return Category(category)
+
+        if use_unknown:
+            return Category.UNKNOWN
         return entry
 
     @property
@@ -30,7 +35,7 @@ class ExpenseClassifier:
         categories: ExpensesToCategories = {}
 
         for filename in os.listdir(self._directory):
-            if not filename.endswith('.json'):
+            if not filename.endswith(self._extension):
                 continue
 
             with open(self._directory / filename) as f:

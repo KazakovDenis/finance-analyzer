@@ -56,7 +56,7 @@ class CredoBankLoader(AbstractLoader):
         for row in input_data:
             trx_type = self._classifier.classify(descr := row[_Field.DESCRIPTION])
 
-            # TODO: currency, category, type
+            # TODO: currency, type
             output_data.append(
                 InputRow(
                     source=self.source,
@@ -65,7 +65,7 @@ class CredoBankLoader(AbstractLoader):
                     currency=Currency.GEL,
                     description=descr,
                     category=trx_type,
-                    type=TransferType.PAYMENT,
+                    type=TransferType.OUTGOING,
                 )
             )
         return output_data
