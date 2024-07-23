@@ -5,6 +5,7 @@ from typing import TypedDict
 
 from dateutil.parser import parse
 
+from exceptions import EmptyReport
 from models.domain import Amount, Currency, InputRow, TransferType
 from src.classifier import ExpenseClassifier
 from src.loaders.base import AbstractLoader
@@ -48,17 +49,20 @@ class CredoBankLoader(AbstractLoader):
         with open(filename) as f:
             reader: csv.DictReader = csv.DictReader(f, fieldnames=self.fields, delimiter=';')
             next(reader)  # skip header
-            data = self._transform(reader)
-        return data
+            input_data = list(reader)
 
-    def _transform(self, input_data: csv.DictReader[dict]) -> list[InputRow]:
-        output_data = []
+        if not input_data:
+            raise EmptyReport(filename)
+
+        return self._transform(input_data)
+
+    def _transform(self, input_data: list[dict]) -> list[InputRow]:
+        # Credo provides separate report for each currency
         currency = self._detect_currency(input_data)
+        output_data = []
 
         for row in input_data:
-            trx_type = self._classifier.classify(descr := row[_Field.DESCRIPTION])
-
-            # TODO: currency, type
+            descr = row[_Field.DESCRIPTION]
             output_data.append(
                 InputRow(
                     source=self.source,
@@ -66,11 +70,19 @@ class CredoBankLoader(AbstractLoader):
                     amount=Amount(row[_Field.AMOUNT]),
                     currency=currency,
                     description=descr,
-                    category=trx_type,
-                    type=TransferType.OUTGOING,
+                    category=self._classifier.classify(descr),
+                    type=self._detect_type(descr),
                 )
             )
         return output_data
 
-    def _detect_currency(self, input_data: csv.DictReader[dict]) -> Currency:
-        return Currency.GEL
+    @staticmethod
+    def _detect_currency(input_data: list[dict]) -> Currency:
+        if ' GEL ' in input_data[0][_Field.DESCRIPTION]:
+            return Currency.GEL
+        return Currency.USD
+
+    @staticmethod
+    def _detect_type(description: str) -> TransferType:
+        # TODO
+        return TransferType.OUTGOING
