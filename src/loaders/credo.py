@@ -1,5 +1,6 @@
 import csv
 from enum import Enum
+from os import PathLike
 from typing import TypedDict
 
 from dateutil.parser import parse
@@ -43,7 +44,7 @@ class CredoBankLoader(AbstractLoader):
     def __init__(self, classifier: ExpenseClassifier):
         self._classifier = classifier
 
-    def load(self, filename: str) -> list[InputRow]:
+    def load(self, filename: PathLike) -> list[InputRow]:
         with open(filename) as f:
             reader: csv.DictReader = csv.DictReader(f, fieldnames=self.fields, delimiter=';')
             next(reader)  # skip header
@@ -52,6 +53,7 @@ class CredoBankLoader(AbstractLoader):
 
     def _transform(self, input_data: csv.DictReader[dict]) -> list[InputRow]:
         output_data = []
+        currency = self._detect_currency(input_data)
 
         for row in input_data:
             trx_type = self._classifier.classify(descr := row[_Field.DESCRIPTION])
@@ -62,10 +64,13 @@ class CredoBankLoader(AbstractLoader):
                     source=self.source,
                     timestamp=parse(row[_Field.DATE]),
                     amount=Amount(row[_Field.AMOUNT]),
-                    currency=Currency.GEL,
+                    currency=currency,
                     description=descr,
                     category=trx_type,
                     type=TransferType.OUTGOING,
                 )
             )
         return output_data
+
+    def _detect_currency(self, input_data: csv.DictReader[dict]) -> Currency:
+        return Currency.GEL
