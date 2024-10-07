@@ -67,7 +67,7 @@ class CredoBankLoader(AbstractLoader):
                 InputRow(
                     source=self.source,
                     timestamp=parse(row[_Field.DATE]),
-                    amount=Amount(row[_Field.AMOUNT]),
+                    amount=Amount(row[_Field.AMOUNT].replace(',', '')),
                     currency=currency,
                     description=descr,
                     category=self._classifier.classify(descr),

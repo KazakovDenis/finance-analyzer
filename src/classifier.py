@@ -14,14 +14,17 @@ class ExpenseClassifier:
     _directory = Path('categories')
     _extension = '.json'
 
-    def classify(self, entry: str, use_unknown: bool = True) -> Category | str:
+    def __init__(self, use_unknown: bool = True):
+        self._use_unknown = use_unknown
+
+    def classify(self, entry: str) -> Category | str:
         temp = entry.lower()
 
         for name, category in self.categories.items():
             if name.lower() in temp:
                 return Category(category)
 
-        if use_unknown:
+        if self._use_unknown:
             return Category.UNKNOWN
         return entry
 

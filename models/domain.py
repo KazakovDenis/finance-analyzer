@@ -5,6 +5,7 @@ from typing import TypeAlias, Union
 
 Amount: TypeAlias = float
 Entry: TypeAlias = tuple[datetime, Union['Category', str], 'Currency']
+CurrencyRate: TypeAlias = float
 
 
 class Category(str, Enum):
