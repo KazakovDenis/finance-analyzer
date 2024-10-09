@@ -3,6 +3,7 @@
 *.xls*
 *.pdf
 *.json
+!example.json
 
 # IDE
 .idea

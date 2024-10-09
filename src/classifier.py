@@ -42,6 +42,13 @@ class ExpenseClassifier:
                 continue
 
             with open(self._directory / filename) as f:
-                categories |= json.load(f)
+                data: dict[str, list[str]] = json.load(f)
+
+            inverted = {}
+            for category, expense in data.items():
+                for name in expense:
+                    inverted[name] = category
+
+            categories |= inverted
 
         return categories

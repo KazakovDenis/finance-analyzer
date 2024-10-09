@@ -18,6 +18,7 @@ class Category(str, Enum):
     GOODS = 'Покупки'
     HEALTH = 'Здоровье'
     RECREATION = 'Отдых'
+    VACATION = 'Отпуск'
     TRANSFER = 'Переводы'
     TRANSPORT = 'Транспорт'
     UNKNOWN = 'Остальное'
